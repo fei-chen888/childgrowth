@@ -19,7 +19,7 @@
 			<div class="mint-cell">
 				<label class="mint-cell-form-label">昵称:</label>
 				<div class="mint-cell-primary">
-					<input type="text" v-validate="'required'" :class="{'minit-cell-form-input mrt-10':true,'is-error':errors.has('nickName')}" name="nickName" v-model="nickName" placeholder="请输入宝宝的昵称"/>
+					<input type="text" v-validate="'required'" :class="{'minit-cell-form-input mrt-10':true,'is-error':errors.has('nickName')}" name="nickName" v-model="nickName" maxlength="4" placeholder="请输入宝宝的昵称"/>
 					<div v-show="errors.has('nickName')" class="validate-error">宝宝的昵称必须填写</div>
 				</div>
 			</div>
