@@ -80,7 +80,7 @@ module.exports = {
 				}
 			},
 			{
-				test: /\.(woff?|eot|ttf|otf)(\?.*)?$/,
+				test: /\.(woff|svg|eot|ttf)\??.*$/,
 				loader: 'url-loader?limit=10008192',
 				query: {
 					name: 'static/font/[name].[ext]',

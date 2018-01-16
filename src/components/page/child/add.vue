@@ -9,12 +9,28 @@
 		<div class="text-center pdt-10" v-on:click="pickerImage()">
 			<div class="headPic-big">
 				<div class="img-bg" :style="{backgroundImage:'url('+headPic+')'}"></div>
-				<img :src="headPic" id="headPic" style="display:none;"/>
 			</div>
 			<span class="color-desc fontsize-small">请点击上传宝宝头像</span>
 			<input style="display:none;" id="fileInput" type="file" v-on:change="selectImage()" accept="image/*"/>
 		</div>
-
+		<div class="clipperVisibleBox" v-show="clipperVisible">
+			<div class="clipperImage"><img :src="clipperImg" id="headPic"/></div>
+			<div class="clipperTool">
+				<mt-button size="small"  type="primary" v-on:click="cropperRotate(-45)" class="mrr-10">
+					<span class="fa fa-rotate-left"></span>
+				</mt-button>
+				<mt-button size="small"  type="primary" v-on:click="cropperRotate(45)" class="mrr-10">
+					<span class="fa fa-rotate-right"></span>
+				</mt-button>
+				<mt-button size="small"  class="right" v-on:click="getCropperCanvasData">
+					取消
+				</mt-button>
+				<mt-button size="small"  type="primary" class="mrr-10 right" v-on:click="getCropperCanvasData">
+					确定
+				</mt-button>
+				
+			</div>
+		</div>
 		<div class="mint-cells-form mrt-20">
 			<div class="mint-cell">
 				<label class="mint-cell-form-label">昵称:</label>
@@ -55,12 +71,14 @@ type="date"
 </template>
 
 <script>
-	import imageResizer from '../../../lib/imageResizer.js';
+	import cropper from 'cropperjs';
+	let _cropper;
 	export default { 
 		name: 'child-add',
 		data(){
 			return {
 				id:-1,
+				clipperVisible:false,
 				pickerValue:new Date().format('yyyy-MM-dd'),
 				sexOptions:[
 				  {
@@ -75,7 +93,8 @@ type="date"
 				nickName:'',
 				birthDate:new Date().format('yyyy-MM-dd'),
 				sex:'0',
-				headPic:require('../../../images/child.png')
+				headPic:require('../../../images/child.png'),
+				clipperImg:require('../../../images/child.png')
 			}
 		},
 		created(){
@@ -95,20 +114,36 @@ type="date"
 			pickerImage(){
 				document.querySelector('#fileInput').click();
 			},
-			selectImage(){
+			cropperRotate(rotate){
+				_cropper.rotate(rotate);
+			},
+			getCropperCanvasData(){
 				let _this = this;
-				let _fileSelector = document.querySelector('#fileInput');
-			    let _file = _fileSelector.files[0];
-			   	let _reader = new FileReader();
-			   	_this.$indicator.open();
+				_this.headPic = _cropper.getCroppedCanvas({fillColor:'#fff'}).toDataURL('image/jpeg');
+				_this.clipperVisible = false;
+				_cropper.destroy();
+			},
+			selectImage(){
+				let _this = this,
+					_fileSelector = document.querySelector('#fileInput'),
+					_file = _fileSelector.files[0],
+					_reader = new FileReader();
+				if(!_file){
+					return;
+				}
 			    _reader.readAsDataURL(_file);
+			    _this.$indicator.open();
 			    _reader.onload = function(e){
-			        _this.headPic = e.target.result;
-			        setTimeout(function(){
-				        imageResizer.resize(document.getElementById('headPic'),100,1,function(d){
-							_this.headPic = d.base64;
-							_this.$indicator.close();
+			        _this.clipperImg = e.target.result;
+			        _this.clipperVisible = true;
+			        
+					setTimeout(function(){
+						let _image = document.getElementById('headPic');
+						_cropper = new cropper(_image, {
+							aspectRatio:1/1,
+							zoomOnWheel:false,
 						});
+						_this.$indicator.close();
 					},200);
 			    };
 			},

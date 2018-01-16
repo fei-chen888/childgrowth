@@ -572,18 +572,46 @@ export default {
 				trigger: 'axis',
 				padding:0,
 				formatter: function (params) {
-					let _valDif = (params[6].value-params[0].value)/100;
-					let _valMin = params[0].value;
-		        	let _str = '<div class="echart-tooltip">';
+					let _valMinIndex = -1,//数值在曲线的区间（低点）
+						_valMaxIndex = -1,//数值在曲线的区间（高点）
+						_percentile = 0,//数值百分位
+						_str = '<div class="echart-tooltip">';
 		        	_str += '<p><span class="pdr-5">年龄</span>'+params[0].name+'</p>';
 		        	for (let item of params) {
 					  if(item.seriesName==_childSeriesName){
-					  	let _percentile = parseInt((item.value-_valMin) / _valDif +1);
+					  	//判断数值在线曲的区间位置
+					  	for(let i=0;i<=6;i++){
+					  		if(params[i].value > item.value && _valMinIndex==-1){
+					  			_valMinIndex = 	i-1;
+					  		}
+					  		if(params[i].value > item.value && _valMaxIndex==-1){
+					  			_valMaxIndex = 	i;
+					  		}
+					  	}
+					  	//数值低于曲线的区间内
+					  	if(_valMinIndex==0 && _valMaxIndex==0){
+					  		_percentile = 0;
+					  	}
+					  	//数值高曲线的区间内
+					  	if(_valMinIndex==-1 && _valMaxIndex==-1){
+					  		_percentile = 99;
+					  	}
+					  	//数组在曲线的区间内
+					  	if(_valMinIndex>0){
+					  		let _minPercentile = parseInt(_this.legendData[_valMinIndex].replace(/\%/,'')),
+					  			_maxPerCentile = parseInt(_this.legendData[_valMaxIndex].replace(/\%/,'')),
+					  			_defPercentile = _maxPerCentile - _minPercentile,
+					  			_minValue = params[_valMinIndex].value,
+					  			_maxValue = params[_valMaxIndex].value,
+					  			_defValue = _maxValue - _minValue;
+					  		_percentile = _minPercentile + _defPercentile*(item.value-_minValue)/_defValue
+					  		
+					  	}
+					  	_percentile = parseInt(_percentile)
 					  	if(_percentile>99){
 					  		_percentile = 99;
 					  	}
 					  	_str += '<p><span class="pdr-5">'+_childSeriesName+'</span>'+item.value+'</p>';
-					  	
 					  	if(_percentile<=5){
 					  		_str += '<p>低于<span class="color-danger pdl-5 pdr-5">95%</span>的同龄儿童</p>'
 					  	}else if(_percentile>=95){
@@ -654,15 +682,17 @@ export default {
 		        }
 			},
 			dataZoom: [
-				{
-					type:'inside',
-			        start: 0,
-			        end: 12
-		    	}
+	           {  
+	               type: 'inside',  
+	               show: true,  
+	               xAxisIndex: [0],  
+	               startValue: 0,
+	               endValue: 10,
+	           },
 			],
 		    series : _seriesData
 		};
-		_myChart.setOption(_option);
+		_myChart.setOption(_option,true);
 		}
 	}
 };

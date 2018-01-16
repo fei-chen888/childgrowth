@@ -226,3 +226,7 @@ header [class^="el-icon-"]:before, header [class*=" el-icon-"]:before{
 .mint-msgbox-btns .mint-msgbox-btn{
 	font-size:14px;
 }
+
+.mint-indicator-wrapper{
+	z-index:99999;
+}

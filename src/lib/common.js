@@ -1,7 +1,10 @@
 import 'mint-ui/lib/style.css';
 import '../css/minthack.css';
 import '../css/style.css';
+import '../css/cropper.css';
 import 'element-theme-chalk/lib/icon.css';
+import 'font-awesome/css/font-awesome.css';
+
 Date.prototype.format = function(fmt)
 { 
     let o = {  
