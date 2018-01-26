@@ -286,8 +286,10 @@ export default {
 		},
 		onAgeChange(picker, values){
 			let _this = this;
-			_this.form.age = values[0].value;
-			_this.form.ageText = values[0].key;
+			if(values[0]){
+				_this.form.age = values[0].value;
+				_this.form.ageText = values[0].key;
+			}
 		},
 		closeReocrdPopup(){
 			let _this = this;
