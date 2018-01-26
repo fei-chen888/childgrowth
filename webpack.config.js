@@ -44,7 +44,10 @@ module.exports = {
 				loader: ExtractTextPlugin.extract({
 					fallback: "style-loader",
 					use: [{
-						loader: 'css-loader'
+						loader: 'css-loader',
+						options: {
+							minimize: true
+						}
 					}]
 				})
 			},
@@ -106,12 +109,12 @@ module.exports = {
 		new ExtractTextPlugin("static/css/style.min.css"),
 		new webpack.optimize.CommonsChunkPlugin({
 			names: ['vendor'],
-		}),/*
+		}),
 	    new webpack.optimize.UglifyJsPlugin({
 		    compress: {
 		        warnings: false
 		    }
-			}),*/
+			}),
 		new HtmlWebpackPlugin({
 			filename: 'index.html',
 			template: './src/index.html',

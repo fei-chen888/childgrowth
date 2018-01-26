@@ -328,6 +328,7 @@ export default {
 			_badyData[_this.id].heightList = _this.$localData.deepCopy(_this.heightList);
 			_badyData[_this.id].weightList = _this.$localData.deepCopy(_this.weightList);
 			_this.$localData.setItem(_this.$config.localStorageKey.childData,_badyData);
+			_myChart.clear();
 			_this.echartDraw();
 		},
 		editRecord(index){
@@ -703,7 +704,7 @@ export default {
 		setTimeout(function(){
 			_myChart.hideLoading();
 			_myChart.setOption(_option);
-		},1000);
+		},2000);
 		}
 	}
 };
