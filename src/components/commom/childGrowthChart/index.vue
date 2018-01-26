@@ -286,10 +286,8 @@ export default {
 		},
 		onAgeChange(picker, values){
 			let _this = this;
-			if(values[0] && values[0].value){
-				_this.form.age = values[0].value;
-				_this.form.ageText = values[0].key;
-			}
+			_this.form.age = values[0].value;
+			_this.form.ageText = values[0].key;
 		},
 		closeReocrdPopup(){
 			let _this = this;
@@ -692,7 +690,18 @@ export default {
 			],
 		    series : _seriesData
 		};
-		_myChart.setOption(_option,true);
+		_myChart.showLoading({
+		  text: '',
+		  color: '#3cc776',
+		  textColor: '#000',
+		  maskColor: 'rgba(0, 0, 0, 0.2)',
+		  zlevel: 0
+		});
+		//延迟渲染图表，让出资源
+		setTimeout(function(){
+			_myChart.hideLoading();
+			_myChart.setOption(_option);
+		},1000);
 		}
 	}
 };
