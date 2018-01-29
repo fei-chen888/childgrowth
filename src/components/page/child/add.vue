@@ -22,7 +22,7 @@
 				<mt-button size="small"  type="primary" v-on:click="cropperRotate(45)" class="mrr-10">
 					<span class="fa fa-rotate-right"></span>
 				</mt-button>
-				<mt-button size="small"  class="right" v-on:click="getCropperCanvasData">
+				<mt-button size="small"  class="right" v-on:click="cancelCropperCanvasData">
 					取消
 				</mt-button>
 				<mt-button size="small"  type="primary" class="mrr-10 right" v-on:click="getCropperCanvasData">
@@ -116,6 +116,11 @@ type="date"
 			},
 			cropperRotate(rotate){
 				_cropper.rotate(rotate);
+			},
+			cancelCropperCanvasData(){
+				let _this = this;
+				_this.clipperVisible = false;
+				_cropper.destroy();
 			},
 			getCropperCanvasData(){
 				let _this = this;
